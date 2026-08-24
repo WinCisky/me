@@ -1,0 +1,26 @@
+---
+import type { ImageMetadata } from 'astro';
+import squareIcon from '../assets/square.svg';
+import squareCodeIcon from '../assets/square-code.svg';
+
+interface Props {
+	icon?: ImageMetadata | string;
+	class?: string;
+}
+
+const { icon, class: className = 'w-12 h-12' } = Astro.props;
+const hasIcon = Boolean(icon);
+---
+
+<div class:list={['relative shrink-0 text-gray-600', className]}>
+	<img class="h-full w-full" src={hasIcon ? squareIcon.src : squareCodeIcon.src} alt="" aria-hidden="true" />
+	{icon && (
+		<span class="absolute inset-x-[25%] bottom-[25%] flex h-[50%] items-center justify-center">
+			{typeof icon === 'string' ? (
+				<span class="text-lg leading-none select-none">{icon}</span>
+			) : (
+				<img class="max-h-full max-w-full object-contain" src={icon.src} alt="" aria-hidden="true" />
+			)}
+		</span>
+	)}
+</div>

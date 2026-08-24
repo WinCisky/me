@@ -1,0 +1,52 @@
+---
+import folderGitIcon from '../assets/folder-git.svg';
+import squareUserIcon from '../assets/square-user.svg';
+
+interface Props {
+	active?: 'projects' | 'about';
+}
+
+const { active = 'projects' } = Astro.props;
+
+const links = [
+	{ label: 'Projects', href: '/', key: 'projects', icon: folderGitIcon },
+	{ label: 'About', href: '/about', key: 'about', icon: squareUserIcon },
+] as const;
+---
+
+<div class="floating-window flex gap-1 bg-gray-50 p-1.5">
+	<div class="min-w-32 flex flex-col justify-start bg-blue-50 p-2 rounded-md border-2 border-white">
+		<div class="flex space-x-1.5">
+			<div class="w-2.5 h-2.5 rounded-full cursor-pointer bg-red-500"></div>
+			<div class="w-2.5 h-2.5 rounded-full cursor-pointer bg-yellow-500"></div>
+			<div class="w-2.5 h-2.5 rounded-full cursor-pointer bg-green-500"></div>
+		</div>
+		<div class="mt-3">
+			<ul>
+				{links.map((link) => (
+					<li class:list={['text-md text-gray-700 flex items-center', active === link.key && 'font-bold']}>
+                        <img class="inline-block w-5 h-5 mr-1" src={link.icon.src} alt="" aria-hidden="true" />
+						<a href={link.href}>{link.label}</a>
+					</li>
+				))}
+			</ul>
+		</div>
+	</div>
+	<div class="flex flex-1 flex-col overflow-y-auto">
+		<slot />
+	</div>
+</div>
+
+<style>
+	.floating-window {
+		min-width: 600px;
+		max-width: 50vw;
+		aspect-ratio: 4 / 3;
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		border-radius: 8px;
+		border: 1px solid #bdbdbd;
+	}
+</style>

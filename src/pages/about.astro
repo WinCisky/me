@@ -1,0 +1,93 @@
+---
+import Layout from '../layouts/Layout.astro';
+import avatar from '../assets/avatar-placeholder.svg';
+
+const NAME = 'Simone Simonella';
+const ROLE = 'Software Developer';
+const BIRTH_DATE = '1997-10-08';
+const CAREER_START = '2019-09-01';
+const CODING_START = '2012-09-01';
+const LOCATION = 'Italy';
+const DESCRIPTION =
+	'I build small, fast web tools and I keep them free. Most of what you find here started as a personal itch and ended up online.';
+
+const today = new Date();
+
+function yearsSince(isoDate: string): number {
+	const from = new Date(isoDate);
+	let years = today.getUTCFullYear() - from.getUTCFullYear();
+	const beforeAnniversary =
+		today.getUTCMonth() < from.getUTCMonth() ||
+		(today.getUTCMonth() === from.getUTCMonth() && today.getUTCDate() < from.getUTCDate());
+	if (beforeAnniversary) years -= 1;
+	return years;
+}
+
+const plural = (years: number) => `${years} ${years === 1 ? 'year' : 'years'}`;
+
+const rows = [
+	{ label: 'Age', value: plural(yearsSince(BIRTH_DATE)) },
+	{ label: 'Working for', value: plural(yearsSince(CAREER_START)) },
+	{ label: 'Coding for', value: plural(yearsSince(CODING_START)) },
+	{ label: 'Based in', value: LOCATION },
+];
+
+// The table only changes at midnight, so cache the page until then.
+const nextMidnight = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() + 1);
+const secondsUntilMidnight = Math.max(60, Math.floor((nextMidnight - today.getTime()) / 1000));
+Astro.response.headers.set('Cache-Control', `public, max-age=0, s-maxage=${secondsUntilMidnight}`);
+---
+
+<Layout>
+	<div class="about-window bg-gray-50 p-1.5">
+		<div class="flex h-full flex-col rounded-md border-2 border-white bg-blue-50 px-5 pt-2 pb-5">
+			<div class="flex space-x-1.5">
+				<a
+					href="/"
+					aria-label="Close"
+					class="h-2.5 w-2.5 rounded-full bg-red-500 cursor-pointer"
+				></a>
+				<span class="h-2.5 w-2.5 rounded-full bg-gray-300" aria-hidden="true"></span>
+				<span class="h-2.5 w-2.5 rounded-full bg-gray-300" aria-hidden="true"></span>
+			</div>
+
+			<img
+				src={avatar.src}
+				alt=""
+				aria-hidden="true"
+				class="mx-auto mt-4 h-24 w-24 rounded-full border border-gray-300"
+			/>
+
+			<h1 class="mt-4 text-center text-2xl font-bold text-gray-800">{NAME}</h1>
+			<p class="text-center text-sm text-gray-500">{ROLE}</p>
+
+			<table class="mt-5 w-full border-collapse text-sm text-gray-700">
+				<tbody>
+					{rows.map((row) => (
+						<tr>
+							<th class="w-1/2 py-0.5 pr-2 text-right font-normal whitespace-nowrap text-gray-500">{row.label}</th>
+							<td class="py-0.5 pl-2 text-left whitespace-nowrap">{row.value}</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
+
+			<p class="mt-auto pt-5 text-center text-xs leading-relaxed text-gray-700 opacity-50">
+				{DESCRIPTION}
+			</p>
+		</div>
+	</div>
+</Layout>
+
+<style>
+	.about-window {
+		width: 320px;
+		aspect-ratio: 3 / 4;
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		border-radius: 8px;
+		border: 1px solid #bdbdbd;
+	}
+</style>

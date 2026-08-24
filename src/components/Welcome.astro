@@ -1,0 +1,67 @@
+---
+import { getCollection } from 'astro:content';
+import { fetchPublicRepos, GITHUB_USER, type Repo } from '../lib/github';
+import FileIcon from './FileIcon.astro';
+import Window from './Window.astro';
+
+let repos: Repo[] = [];
+let error: string | null = null;
+
+try {
+	repos = await fetchPublicRepos(GITHUB_USER);
+} catch {
+	error = 'Could not load projects.';
+}
+
+const highlights = new Map(
+	(await getCollection('projects')).map((entry) => [entry.data.repo.toLowerCase(), entry]),
+);
+
+const byYear = new Map<number, Repo[]>();
+for (const repo of repos) {
+	const year = new Date(repo.pushed_at).getFullYear();
+	if (!byYear.has(year)) byYear.set(year, []);
+	byYear.get(year)!.push(repo);
+}
+
+const years = [...byYear.entries()].sort((a, b) => b[0] - a[0]);
+---
+
+<Window active="projects">
+	{years.map(([year, yearRepos]) => (
+		<>
+			<div class="pl-2 first:border-b border-gray-300 text-gray-500 text-sm">
+				{year}
+			</div>
+			<div class="flex flex-wrap items-start gap-2 pl-2 py-1 not-last:border-b border-gray-300">
+				{yearRepos.map((repo) => {
+					const highlight = highlights.get(repo.name.toLowerCase());
+					const external = !highlight;
+
+					return (
+						<a
+							class:list={[
+								'group flex w-24 flex-col items-center gap-1 p-1 no-underline transition-opacity hover:opacity-100',
+								!highlight && 'opacity-60',
+							]}
+							href={highlight ? `/projects/${highlight.id}` : repo.html_url}
+							target={external ? '_blank' : undefined}
+							rel={external ? 'noopener noreferrer' : undefined}
+							title={highlight?.data.summary ?? repo.description ?? undefined}
+						>
+							<FileIcon icon={highlight?.data.icon} />
+							<span class="text-center text-sm text-gray-700 wrap-anywhere hyphens-auto group-hover:text-blue-600 group-hover:underline">
+								{highlight?.data.title ?? repo.name}
+							</span>
+						</a>
+					);
+				})}
+			</div>
+		</>
+	))}
+	{years.length === 0 && (
+		<div class="pl-2 text-gray-500 text-sm">
+			{error ?? 'No public projects found.'}
+		</div>
+	)}
+</Window>
