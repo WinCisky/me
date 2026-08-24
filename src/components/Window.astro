@@ -22,13 +22,16 @@ const links = [
 			<div class="w-2.5 h-2.5 rounded-full cursor-pointer bg-green-500"></div>
 		</div>
 		<div class="mt-3">
-			<ul>
-				{links.map((link) => (
-					<li class:list={['text-md text-gray-700 flex items-center', active === link.key && 'font-bold']}>
-                        <img class="inline-block w-5 h-5 mr-1" src={link.icon.src} alt="" aria-hidden="true" />
-						<a href={link.href}>{link.label}</a>
-					</li>
-				))}
+			<ul class="flex flex-col text-gray-700 gap-1">
+				{links.map((link) => {
+					const Icon = link.icon;
+					return (
+						<li class:list={['px-1.5 py-1 text-sm flex items-center rounded-md', active === link.key && 'text-blue-700 bg-gray-50']}>
+							<Icon class="inline-block w-5 h-5 mr-1" aria-hidden="true" />
+							<a href={link.href}>{link.label}</a>
+						</li>
+					);
+				})}
 			</ul>
 		</div>
 	</div>

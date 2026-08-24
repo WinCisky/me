@@ -2,7 +2,7 @@
 repo: md-preview
 title: Markdown Preview
 summary: A tiny web editor with live markdown rendering.
-icon: 📝
+icon: https://raw.githubusercontent.com/WinCisky/md-preview/refs/heads/main/public/favicon.ico
 ---
 
 A minimal markdown editor that renders while you type, with no build step and no
