@@ -13,8 +13,8 @@ const hasIcon = Boolean(icon);
 const ContainerIcon = hasIcon ? squareIcon : squareCodeIcon;
 ---
 
-<div class:list={['relative shrink-0 text-gray-600', className]}>
-	<ContainerIcon class="h-full w-full group-hover:text-blue-600" aria-hidden="true" />
+<div class:list={['relative shrink-0 text-ink-muted', className]}>
+	<ContainerIcon class="h-full w-full group-hover:text-accent" aria-hidden="true" />
 	{icon && (
 		<img
 			class="absolute top-1/2 left-1/2 w-6 h-6 -translate-x-1/2 -translate-y-1/2"

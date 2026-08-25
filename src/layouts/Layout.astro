@@ -1,27 +1,49 @@
 ---
-import '../styles/global.css'
+import '../styles/global.css';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { title = 'Simone Simonella', description } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="color-scheme" content="light dark" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>{title}</title>
+		{description && <meta name="description" content={description} />}
 	</head>
-	<body>
+	<body class="min-h-dvh flex items-center justify-center bg-desktop">
+		<svg
+			class="fixed inset-0 -z-10 h-full w-full text-ink"
+			viewBox="0 0 1440 900"
+			preserveAspectRatio="xMidYMax slice"
+			aria-hidden="true"
+		>
+			<polygon
+				opacity="0.05"
+				fill="currentColor"
+				points="0,560 140,360 260,470 420,300 560,460 700,340 880,480 1040,330 1200,470 1330,380 1440,460 1440,900 0,900"
+			/>
+			<polygon
+				opacity="0.08"
+				fill="currentColor"
+				points="0,640 180,480 360,620 540,450 720,610 900,470 1100,640 1260,520 1440,620 1440,900 0,900"
+			/>
+			<polygon
+				opacity="0.12"
+				fill="currentColor"
+				points="0,760 240,600 480,740 760,580 1000,730 1240,620 1440,720 1440,900 0,900"
+			/>
+		</svg>
 		<slot />
 	</body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>

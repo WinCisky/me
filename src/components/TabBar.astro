@@ -1,0 +1,33 @@
+---
+import folderGitIcon from '../assets/folder-git.svg';
+import squareUserIcon from '../assets/square-user.svg';
+
+interface Props {
+	active?: 'projects' | 'about';
+}
+
+const { active = 'projects' } = Astro.props;
+
+const tabs = [
+	{ label: 'Projects', href: '/', key: 'projects', icon: folderGitIcon },
+	{ label: 'About', href: '/about', key: 'about', icon: squareUserIcon },
+] as const;
+---
+
+<nav class="fixed inset-x-0 bottom-0 z-10 flex justify-around border-t border-hairline bg-toolbar pb-[env(safe-area-inset-bottom)] md:hidden">
+	{tabs.map((tab) => {
+		const Icon = tab.icon;
+		return (
+			<a
+				href={tab.href}
+				class:list={[
+					'flex flex-col items-center gap-0.5 px-6 pt-1.5 pb-1 text-[10px] no-underline',
+					active === tab.key ? 'text-accent' : 'text-ink-muted',
+				]}
+			>
+				<Icon class="h-6 w-6" aria-hidden="true" />
+				{tab.label}
+			</a>
+		);
+	})}
+</nav>

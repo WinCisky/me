@@ -27,13 +27,13 @@ for (const repo of repos) {
 const years = [...byYear.entries()].sort((a, b) => b[0] - a[0]);
 ---
 
-<Window active="projects">
+<Window active="projects" title="Projects">
 	{years.map(([year, yearRepos]) => (
 		<>
-			<div class="px-2 py-1 first:border-b border-gray-300 text-gray-400 font-semibold">
+			<div class="px-4 py-2 text-[13px] font-semibold text-ink-muted not-first:border-t border-hairline">
 				{year}
 			</div>
-			<div class="flex flex-wrap items-start gap-2 pl-2 py-1 not-last:border-b border-gray-300">
+			<div class="grid grid-cols-4 items-start gap-x-2 gap-y-4 px-4 pt-1 pb-5 md:flex md:flex-wrap md:gap-x-3 md:gap-y-5">
 				{yearRepos.map((repo) => {
 					const highlight = highlights.get(repo.name.toLowerCase());
 					const external = !highlight;
@@ -41,7 +41,7 @@ const years = [...byYear.entries()].sort((a, b) => b[0] - a[0]);
 					return (
 						<a
 							class:list={[
-								'group flex w-18 flex-col items-center no-underline transition-opacity hover:opacity-100',
+								'group flex w-22 flex-col items-center gap-1 no-underline transition-opacity hover:opacity-100',
 								!highlight && 'opacity-60',
 							]}
 							href={highlight ? `/projects/${highlight.id}` : repo.html_url}
@@ -49,8 +49,8 @@ const years = [...byYear.entries()].sort((a, b) => b[0] - a[0]);
 							rel={external ? 'noopener noreferrer' : undefined}
 							title={highlight?.data.summary ?? repo.description ?? undefined}
 						>
-							<FileIcon icon={highlight?.data.icon} />
-							<span class="text-center text-xs text-gray-700 wrap-anywhere hyphens-auto group-hover:text-blue-600 group-hover:underline">
+							<FileIcon icon={highlight?.data.icon} class="w-14 h-14" />
+							<span class="text-center text-xs text-ink wrap-anywhere hyphens-auto group-hover:text-accent group-hover:underline">
 								{highlight?.data.title ?? repo.name}
 							</span>
 						</a>
@@ -60,7 +60,7 @@ const years = [...byYear.entries()].sort((a, b) => b[0] - a[0]);
 		</>
 	))}
 	{years.length === 0 && (
-		<div class="pl-2 text-gray-500 text-sm">
+		<div class="px-4 py-2 text-sm text-ink-muted">
 			{error ?? 'No public projects found.'}
 		</div>
 	)}

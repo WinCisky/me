@@ -1,6 +1,8 @@
 ---
+import avatar from '../assets/me.jpg';
+import TabBar from '../components/TabBar.astro';
 import Layout from '../layouts/Layout.astro';
-import avatar from '../../public/me.jpg';
+import { GITHUB_USER } from '../lib/github';
 
 const NAME = 'Simone Simonella';
 const ROLE = 'Software Developer';
@@ -38,54 +40,49 @@ const secondsUntilMidnight = Math.max(60, Math.floor((nextMidnight - today.getTi
 Astro.response.headers.set('Cache-Control', `public, max-age=0, s-maxage=${secondsUntilMidnight}`);
 ---
 
-<Layout>
-	<div class="about-window bg-gray-50 p-2">
-		<div class="flex space-x-1.5">
-				<a
-					href="/"
-					aria-label="Close"
-					class="h-2.5 w-2.5 rounded-full bg-red-500 cursor-pointer"
-				></a>
-				<span class="h-2.5 w-2.5 rounded-full bg-gray-300" aria-hidden="true"></span>
-				<span class="h-2.5 w-2.5 rounded-full bg-gray-300" aria-hidden="true"></span>
-			</div>
+<Layout title="About — Simone Simonella" description={DESCRIPTION.trim()}>
+	<div class="flex w-[340px] flex-col overflow-hidden rounded-xl border border-hairline bg-window shadow-2xl max-md:min-h-dvh max-md:w-full max-md:rounded-none max-md:border-0 max-md:shadow-none">
+		<header class="hidden h-11 shrink-0 items-center gap-2 px-4 md:flex">
+			<a href="/" aria-label="Close" class="h-3 w-3 rounded-full bg-red-500"></a>
+			<span class="h-3 w-3 rounded-full bg-hairline" aria-hidden="true"></span>
+			<span class="h-3 w-3 rounded-full bg-hairline" aria-hidden="true"></span>
+		</header>
 
+		<div class="flex flex-col items-center px-8 pt-6 pb-8 max-md:my-auto max-md:pb-24">
 			<img
 				src={avatar.src}
 				alt=""
 				aria-hidden="true"
-				class="mx-auto mt-4 h-48 w-auto rounded-sm object-cover"
+				class="h-40 w-auto rounded-md object-cover"
 			/>
 
-			<h1 class="mt-4 text-center text-2xl font-bold text-gray-800">{NAME}</h1>
-			<p class="text-center text-xs text-gray-400">{ROLE}</p>
+			<h1 class="mt-8 text-center text-[22px] font-bold text-ink">{NAME}</h1>
+			<p class="mt-0.5 text-center text-xs text-ink-muted">{ROLE}</p>
 
-			<table class="mt-5 w-full border-collapse text-sm text-gray-700">
+			<table class="mt-7 border-collapse text-[13px]">
 				<tbody>
 					{rows.map((row) => (
 						<tr>
-							<th class="w-1/2 py-0.5 pr-2 text-right font-normal whitespace-nowrap">{row.label}</th>
-							<td class="py-0.5 pl-2 text-gray-500 text-left whitespace-nowrap">{row.value}</td>
+							<th class="py-0.5 pr-2 text-right font-semibold whitespace-nowrap text-ink">{row.label}</th>
+							<td class="py-0.5 pl-2 text-left whitespace-nowrap text-ink/80">{row.value}</td>
 						</tr>
 					))}
 				</tbody>
 			</table>
 
-			<p class="mt-auto pt-5 text-center text-xs leading-relaxed text-gray-700 opacity-50">
+			<a
+				href={`https://github.com/${GITHUB_USER}`}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="mt-8 rounded-full bg-button px-4 py-1 text-[13px] font-medium text-ink no-underline hover:opacity-80"
+			>
+				More on GitHub…
+			</a>
+
+			<p class="mt-6 text-center text-[11px] leading-relaxed text-ink-muted">
 				{DESCRIPTION}
 			</p>
+		</div>
 	</div>
+	<TabBar active="about" />
 </Layout>
-
-<style>
-	.about-window {
-		width: 320px;
-		aspect-ratio: 3 / 4;
-		position: fixed;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		border-radius: 8px;
-		border: 1px solid #bdbdbd;
-	}
-</style>
