@@ -1,0 +1,51 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+	src: ImageMetadata;
+	alt?: string;
+	class?: string;
+	imgClass?: string;
+	widths: number[];
+	sizes: string;
+	eager?: boolean;
+}
+
+const { src, alt = '', class: className, imgClass, widths, sizes, eager = false } = Astro.props;
+---
+
+<div class:list={['group relative', className]} data-preview>
+	<div class="skeleton absolute inset-0 group-data-[loaded]:hidden" aria-hidden="true"></div>
+	<Image
+		src={src}
+		alt={alt}
+		widths={widths}
+		sizes={sizes}
+		loading={eager ? 'eager' : 'lazy'}
+		fetchpriority={eager ? 'high' : 'auto'}
+		decoding="async"
+		class:list={[
+			'opacity-0 transition-opacity duration-200 group-data-[loaded]:opacity-100',
+			imgClass,
+		]}
+	/>
+</div>
+
+<script>
+	for (const frame of document.querySelectorAll<HTMLElement>('[data-preview]')) {
+		const img = frame.querySelector('img');
+		if (!img) continue;
+
+		const done = () => {
+			frame.dataset.loaded = '';
+		};
+
+		// A cached image can already be done before this module runs.
+		if (img.complete && img.naturalWidth > 0) done();
+		else {
+			img.addEventListener('load', done, { once: true });
+			img.addEventListener('error', done, { once: true });
+		}
+	}
+</script>

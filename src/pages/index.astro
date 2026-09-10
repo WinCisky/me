@@ -1,10 +1,10 @@
 ---
-import Welcome from '../components/Welcome.astro';
+import Recent from '../components/Recent.astro';
 import Layout from '../layouts/Layout.astro';
 
 Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600');
 ---
 
-<Layout title="Simone Simonella — Projects" description="Personal projects by Simone Simonella.">
-	<Welcome />
+<Layout title="Simone Simonella | Recent" description="Projects Simone Simonella recently worked on.">
+	<Recent />
 </Layout>

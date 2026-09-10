@@ -1,15 +1,17 @@
 ---
+import clockIcon from '../assets/clock.svg';
 import folderGitIcon from '../assets/folder-git.svg';
 import squareUserIcon from '../assets/square-user.svg';
 
 interface Props {
-	active?: 'projects' | 'about';
+	active?: 'recent' | 'projects' | 'about';
 }
 
-const { active = 'projects' } = Astro.props;
+const { active = 'recent' } = Astro.props;
 
 const tabs = [
-	{ label: 'Projects', href: '/', key: 'projects', icon: folderGitIcon },
+	{ label: 'Recent', href: '/', key: 'recent', icon: clockIcon },
+	{ label: 'Projects', href: '/projects', key: 'projects', icon: folderGitIcon },
 	{ label: 'About', href: '/about', key: 'about', icon: squareUserIcon },
 ] as const;
 ---

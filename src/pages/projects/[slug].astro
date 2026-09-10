@@ -1,7 +1,7 @@
 ---
-import { Image } from 'astro:assets';
 import { getEntry, render } from 'astro:content';
 import FileIcon from '../../components/FileIcon.astro';
+import Preview from '../../components/Preview.astro';
 import Window from '../../components/Window.astro';
 import Layout from '../../layouts/Layout.astro';
 import { GITHUB_USER } from '../../lib/github';
@@ -19,11 +19,11 @@ const { title, repo, summary, icon, preview } = entry.data;
 Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600');
 ---
 
-<Layout title={`${title ?? repo} — Simone Simonella`} description={summary}>
+<Layout title={`${title ?? repo} | Simone Simonella`} description={summary}>
 	<Window
 		active="projects"
 		title={`${repo}.md`}
-		backHref="/"
+		backHref="/projects"
 		path={['Users', 'ssimonella', 'Projects', `${repo}.md`]}
 	>
 		<a
@@ -46,11 +46,14 @@ Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600');
 			</header>
 
 			{preview && (
-				<Image
+				<Preview
 					src={preview}
 					alt={`${title ?? repo} preview`}
-					class="w-full rounded-md border border-hairline"
-					loading="eager"
+					class="w-full overflow-hidden rounded-md border border-hairline"
+					imgClass="block w-full"
+					widths={[640, 960, 1280, 1600]}
+					sizes="(min-width: 768px) 700px, 92vw"
+					eager
 				/>
 			)}
 

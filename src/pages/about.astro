@@ -1,88 +1,113 @@
 ---
-import avatar from '../assets/me.jpg';
-import TabBar from '../components/TabBar.astro';
-import Layout from '../layouts/Layout.astro';
-import { GITHUB_USER } from '../lib/github';
+import avatar from "../assets/me.jpg";
+import TabBar from "../components/TabBar.astro";
+import Layout from "../layouts/Layout.astro";
+import { GITHUB_USER } from "../lib/github";
 
-const NAME = 'Simone Simonella';
-const ROLE = 'Software Developer';
-const BIRTH_DATE = '1997-10-08';
-const CAREER_START = '2019-09-01';
-const CODING_START = '2012-09-01';
-const LOCATION = 'Italy';
+const NAME = "Simone Simonella";
+const ROLE = "Software Developer";
+const BIRTH_DATE = "1997-10-08";
+const CAREER_START = "2021-09-01";
+const LOCATION = "Italy";
 const DESCRIPTION =
-	'I want to retire in a cabin in the woods, but until then I write code for a living. I like to work on small projects that make sense to me. ';
+    "I want to retire in a cabin in the woods, but until then I write code for a living. I like to work on small projects that make sense to me. ";
 
 const today = new Date();
 
 function yearsSince(isoDate: string): number {
-	const from = new Date(isoDate);
-	let years = today.getUTCFullYear() - from.getUTCFullYear();
-	const beforeAnniversary =
-		today.getUTCMonth() < from.getUTCMonth() ||
-		(today.getUTCMonth() === from.getUTCMonth() && today.getUTCDate() < from.getUTCDate());
-	if (beforeAnniversary) years -= 1;
-	return years;
+    const from = new Date(isoDate);
+    let years = today.getUTCFullYear() - from.getUTCFullYear();
+    const beforeAnniversary =
+        today.getUTCMonth() < from.getUTCMonth() ||
+        (today.getUTCMonth() === from.getUTCMonth() &&
+            today.getUTCDate() < from.getUTCDate());
+    if (beforeAnniversary) years -= 1;
+    return years;
 }
 
-const plural = (years: number) => `${years} ${years === 1 ? 'year' : 'years'}`;
+const plural = (years: number) => `${years} ${years === 1 ? "year" : "years"}`;
 
 const rows = [
-	{ label: 'Age', value: plural(yearsSince(BIRTH_DATE)) },
-	{ label: 'Working for', value: plural(yearsSince(CAREER_START)) },
-	{ label: 'Coding for', value: plural(yearsSince(CODING_START)) },
-	{ label: 'Based in', value: LOCATION },
+    { label: "Age", value: plural(yearsSince(BIRTH_DATE)) },
+    { label: "Working for", value: plural(yearsSince(CAREER_START)) },
+    { label: "Based in", value: LOCATION },
 ];
 
 // The table only changes at midnight, so cache the page until then.
-const nextMidnight = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() + 1);
-const secondsUntilMidnight = Math.max(60, Math.floor((nextMidnight - today.getTime()) / 1000));
-Astro.response.headers.set('Cache-Control', `public, max-age=0, s-maxage=${secondsUntilMidnight}`);
+const nextMidnight = Date.UTC(
+    today.getUTCFullYear(),
+    today.getUTCMonth(),
+    today.getUTCDate() + 1,
+);
+const secondsUntilMidnight = Math.max(
+    60,
+    Math.floor((nextMidnight - today.getTime()) / 1000),
+);
+Astro.response.headers.set(
+    "Cache-Control",
+    `public, max-age=0, s-maxage=${secondsUntilMidnight}`,
+);
 ---
 
-<Layout title="About — Simone Simonella" description={DESCRIPTION.trim()}>
-	<div class="flex w-[340px] flex-col overflow-hidden rounded-xl border border-hairline bg-window shadow-2xl max-md:min-h-dvh max-md:w-full max-md:rounded-none max-md:border-0 max-md:shadow-none">
-		<header class="hidden h-11 shrink-0 items-center gap-2 px-4 md:flex">
-			<a href="/" aria-label="Close" class="h-3 w-3 rounded-full bg-red-500"></a>
-			<span class="h-3 w-3 rounded-full bg-hairline" aria-hidden="true"></span>
-			<span class="h-3 w-3 rounded-full bg-hairline" aria-hidden="true"></span>
-		</header>
+<Layout title="About | Simone Simonella" description={DESCRIPTION.trim()}>
+    <div class="flex w-[340px] flex-col overflow-hidden rounded-xl border border-hairline bg-window shadow-2xl max-md:min-h-dvh max-md:w-full max-md:rounded-none max-md:border-0 max-md:shadow-none">
+        <header class="hidden h-11 shrink-0 items-center gap-2 px-4 md:flex">
+            <a
+                href="/"
+                aria-label="Close"
+                class="h-3 w-3 rounded-full bg-red-500"
+            ></a>
+            <span
+                class="h-3 w-3 rounded-full bg-hairline"
+                aria-hidden="true"
+            ></span>
+            <span
+                class="h-3 w-3 rounded-full bg-hairline"
+                aria-hidden="true"
+            ></span>
+        </header>
 
-		<div class="flex flex-col items-center px-8 pt-6 pb-8 max-md:my-auto max-md:pb-24">
-			<img
-				src={avatar.src}
-				alt=""
-				aria-hidden="true"
-				class="h-40 w-auto rounded-md object-cover"
-			/>
+        <div class="flex flex-col items-center px-8 pt-6 pb-8 max-md:my-auto max-md:pb-24">
+            <img
+                src={avatar.src}
+                alt=""
+                aria-hidden="true"
+                class="h-40 w-auto rounded-md object-cover"
+            />
 
-			<h1 class="mt-8 text-center text-[22px] font-bold text-ink">{NAME}</h1>
-			<p class="mt-0.5 text-center text-xs text-ink-muted">{ROLE}</p>
+            <h1 class="mt-8 text-center text-[22px] font-bold text-ink">
+                {NAME}
+            </h1>
+            <p class="mt-0.5 text-center text-xs text-ink-muted">{ROLE}</p>
 
-			<table class="mt-7 border-collapse text-[13px]">
-				<tbody>
-					{rows.map((row) => (
-						<tr>
-							<th class="py-0.5 pr-2 text-right font-semibold whitespace-nowrap text-ink">{row.label}</th>
-							<td class="py-0.5 pl-2 text-left whitespace-nowrap text-ink/80">{row.value}</td>
-						</tr>
-					))}
-				</tbody>
-			</table>
+            <table class="mt-7 border-collapse text-[13px]">
+                <tbody>
+                    {rows.map((row) => (
+                        <tr>
+                            <th class="py-0.5 pr-2 text-right font-semibold whitespace-nowrap text-ink">
+                                {row.label}
+                            </th>
+                            <td class="py-0.5 pl-2 text-left whitespace-nowrap text-ink/80">
+                                {row.value}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
 
-			<a
-				href={`https://github.com/${GITHUB_USER}`}
-				target="_blank"
-				rel="noopener noreferrer"
-				class="mt-8 rounded-full bg-button px-4 py-1 text-[13px] font-medium text-ink no-underline hover:opacity-80"
-			>
-				More on GitHub…
-			</a>
+            <a
+                href={`https://github.com/${GITHUB_USER}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mt-8 rounded-full bg-button px-4 py-1 text-[13px] font-medium text-ink no-underline hover:opacity-80"
+            >
+                More on GitHub…
+            </a>
 
-			<p class="mt-6 text-center text-[11px] leading-relaxed text-ink-muted">
-				{DESCRIPTION}
-			</p>
-		</div>
-	</div>
-	<TabBar active="about" />
+            <p class="mt-6 text-center text-[11px] leading-relaxed text-ink-muted">
+                {DESCRIPTION}
+            </p>
+        </div>
+    </div>
+    <TabBar active="about" />
 </Layout>

@@ -1,0 +1,280 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import { formatFinderDate, formatFinderSize } from "../lib/format";
+import { fetchPublicRepos, GITHUB_USER, type Repo } from "../lib/github";
+import FileIcon from "./FileIcon.astro";
+import Preview from "./Preview.astro";
+import Window from "./Window.astro";
+
+interface RecentItem {
+    entry: CollectionEntry<"projects">;
+    repo: Repo;
+}
+
+let repos: Repo[] = [];
+let error: string | null = null;
+
+try {
+    repos = await fetchPublicRepos(GITHUB_USER);
+} catch {
+    error = "Could not load recent projects.";
+}
+
+const reposByName = new Map(
+    repos.map((repo) => [repo.name.toLowerCase(), repo]),
+);
+
+const items: RecentItem[] = (await getCollection("projects"))
+    .map((entry) => ({
+        entry,
+        repo: reposByName.get(entry.data.repo.toLowerCase()),
+    }))
+    .filter((item): item is RecentItem => Boolean(item.repo))
+    .sort(
+        (a, b) => Date.parse(b.repo.pushed_at) - Date.parse(a.repo.pushed_at),
+    );
+
+const primaryPillClass =
+    "rounded-full bg-accent px-3.5 py-1 text-center text-[12px] font-medium text-white no-underline hover:opacity-80";
+const secondaryPillClass =
+    "rounded-full bg-button px-3.5 py-1 text-center text-[12px] font-medium text-ink no-underline hover:opacity-80";
+---
+
+<Window active="recent" title="Recent">
+    {items.length > 0 ? (
+        <div class="flex flex-col md:grid md:h-full md:grid-cols-[minmax(0,1fr)_14rem] md:grid-rows-[minmax(0,1fr)_auto]">
+            <div class="flex flex-col md:col-start-1 md:row-start-1 md:min-h-0 md:overflow-y-auto">
+                {items.map(({ entry, repo }, index) => (
+                    <div
+                        id={`hero-${index}`}
+                        data-hero={index}
+                        hidden={index !== 0}
+                        class="flex flex-1 flex-col"
+                    >
+                        <div class="flex flex-1 min-h-0 items-center justify-center p-6 md:p-10">
+                            {entry.data.preview ? (
+                                <Preview
+                                    src={entry.data.preview}
+                                    class="flex min-h-0 max-h-full max-w-full overflow-hidden rounded-md border border-hairline shadow-sm"
+                                    imgClass="block h-auto w-auto max-h-full max-w-full"
+                                    widths={[480, 640, 960, 1280]}
+                                    sizes="(min-width: 768px) 560px, 92vw"
+                                    eager={index === 0}
+                                />
+                            ) : (
+                                <div class="flex h-40 w-40 items-center justify-center rounded-xl border border-hairline bg-window md:h-56 md:w-56">
+                                    <FileIcon
+                                        icon={entry.data.icon}
+                                        class="h-24 w-24"
+                                    />
+                                </div>
+                            )}
+                        </div>
+                        <div class="px-6 pb-6 text-center md:px-10">
+                            <a
+                                href={`/projects/${entry.id}`}
+                                class="text-[15px] font-semibold text-ink no-underline hover:text-accent hover:underline"
+                            >
+                                {entry.data.title ?? entry.data.repo}
+                            </a>
+                            {entry.data.summary && (
+                                <p class="mx-auto mt-1 max-w-md text-[12px] text-ink-muted">
+                                    {entry.data.summary}
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            <aside class="flex flex-col border-t border-hairline px-4 py-4 md:col-start-2 md:row-start-1 md:row-span-2 md:min-h-0 md:overflow-y-auto md:border-t-0 md:border-l">
+                {items.map(({ entry, repo }, index) => {
+                    const topics = repo.topics ?? [];
+                    const rows = [
+                        {
+                            label: "Created",
+                            value: formatFinderDate(repo.created_at),
+                        },
+                        {
+                            label: "Modified",
+                            value: formatFinderDate(repo.pushed_at),
+                        },
+                        ...(repo.stargazers_count > 0
+                            ? [
+                                  {
+                                      label: "Stars",
+                                      value: String(repo.stargazers_count),
+                                  },
+                              ]
+                            : []),
+                        ...(repo.language
+                            ? [{ label: "Language", value: repo.language }]
+                            : []),
+                        { label: "Size", value: formatFinderSize(repo.size) },
+                    ];
+
+                    return (
+                        <div data-detail={index} hidden={index !== 0}>
+                            <h2 class="truncate text-[13px] font-semibold text-ink">
+                                {entry.data.repo}
+                            </h2>
+
+                            <div class="mt-3 border-t border-hairline pt-3">
+                                <table class="w-full border-collapse text-[12px]">
+                                    <tbody>
+                                        {rows.map((row) => (
+                                            <tr>
+                                                <th class="py-0.5 pr-2 text-right align-top font-medium whitespace-nowrap text-ink-muted">
+                                                    {row.label}
+                                                </th>
+                                                <td class="py-0.5 text-left text-ink">
+                                                    {row.value}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {topics.length > 0 && (
+                                <div class="mt-3 flex flex-wrap gap-1 border-t border-hairline pt-3">
+                                    {topics.map((topic) => (
+                                        <span class="rounded-full bg-button px-2 py-0.5 text-[10px] text-ink-muted">
+                                            {topic}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
+
+                            <div class="mt-3 flex flex-col gap-1.5 border-t border-hairline pt-3">
+                                <a
+                                    href={`/projects/${entry.id}`}
+                                    class={primaryPillClass}
+                                >
+                                    Open
+                                </a>
+                                <a
+                                    href={repo.html_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class={secondaryPillClass}
+                                >
+                                    GitHub
+                                </a>
+                                {repo.homepage && (
+                                    <a
+                                        href={repo.homepage}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class={secondaryPillClass}
+                                    >
+                                        Live
+                                    </a>
+                                )}
+                            </div>
+                        </div>
+                    );
+                })}
+            </aside>
+
+            {items.length > 1 && (
+                <div
+                    data-carousel
+                    role="tablist"
+                    aria-label="Recent projects"
+                    class="flex shrink-0 snap-x gap-3 overflow-x-auto border-t border-hairline px-4 py-3 md:col-start-1 md:row-start-2"
+                >
+                    {items.map(({ entry, repo }, index) => (
+                        <button
+                            type="button"
+                            role="tab"
+                            id={`thumb-${index}`}
+                            data-thumb={index}
+                            aria-selected={index === 0 ? "true" : "false"}
+                            aria-controls={`hero-${index}`}
+                            tabindex={index === 0 ? 0 : -1}
+                            title={`${entry.data.title ?? entry.data.repo} | ${formatFinderDate(repo.pushed_at)}`}
+                            class:list={[
+                                "flex w-16 shrink-0 snap-start flex-col items-center gap-1 rounded-md border border-hairline p-1 hover:bg-selected",
+                                index === 0 && "ring-2 ring-accent",
+                            ]}
+                        >
+                            <FileIcon
+                                icon={entry.data.icon}
+                                class="h-10 w-10"
+                            />
+                            <span class="w-full truncate text-center text-[10px] text-ink">
+                                {entry.data.title ?? entry.data.repo}
+                            </span>
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
+    ) : (
+        <div class="px-4 py-2 text-sm text-ink-muted">
+            {error ?? "No recent projects found."}
+        </div>
+    )}
+</Window>
+
+<script>
+    const tablist = document.querySelector<HTMLElement>("[data-carousel]");
+
+    if (tablist) {
+        const thumbs = Array.from(
+            tablist.querySelectorAll<HTMLButtonElement>("[data-thumb]"),
+        );
+        const heroes = Array.from(
+            document.querySelectorAll<HTMLElement>("[data-hero]"),
+        );
+        const details = Array.from(
+            document.querySelectorAll<HTMLElement>("[data-detail]"),
+        );
+
+        function setActive(index: number) {
+            thumbs.forEach((thumb) => {
+                const active = thumb.dataset.thumb === String(index);
+                thumb.setAttribute("aria-selected", String(active));
+                thumb.tabIndex = active ? 0 : -1;
+                thumb.classList.toggle("ring-2", active);
+                thumb.classList.toggle("ring-accent", active);
+            });
+            heroes.forEach((hero) => {
+                hero.hidden = hero.dataset.hero !== String(index);
+            });
+            details.forEach((detail) => {
+                detail.hidden = detail.dataset.detail !== String(index);
+            });
+            thumbs
+                .find((thumb) => thumb.dataset.thumb === String(index))
+                ?.scrollIntoView({ inline: "nearest", block: "nearest" });
+        }
+
+        tablist.addEventListener("click", (event) => {
+            const thumb = (
+                event.target as HTMLElement
+            ).closest<HTMLButtonElement>("[data-thumb]");
+            if (thumb?.dataset.thumb) setActive(Number(thumb.dataset.thumb));
+        });
+
+        tablist.addEventListener("keydown", (event) => {
+            const currentIndex = thumbs.findIndex(
+                (thumb) => thumb.getAttribute("aria-selected") === "true",
+            );
+            let nextIndex = currentIndex;
+
+            if (event.key === "ArrowRight")
+                nextIndex = Math.min(currentIndex + 1, thumbs.length - 1);
+            else if (event.key === "ArrowLeft")
+                nextIndex = Math.max(currentIndex - 1, 0);
+            else if (event.key === "Home") nextIndex = 0;
+            else if (event.key === "End") nextIndex = thumbs.length - 1;
+            else return;
+
+            event.preventDefault();
+            setActive(nextIndex);
+            thumbs[nextIndex]?.focus();
+        });
+    }
+</script>

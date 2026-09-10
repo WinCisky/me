@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import { getImage } from 'astro:assets';
+import faviconSrc from '../assets/favicon.jpg';
 
 interface Props {
 	title?: string;
@@ -7,6 +9,9 @@ interface Props {
 }
 
 const { title = 'Simone Simonella', description } = Astro.props;
+
+const favicon32 = await getImage({ src: faviconSrc, width: 32, height: 32, format: 'png' });
+const favicon180 = await getImage({ src: faviconSrc, width: 180, height: 180, format: 'png' });
 ---
 
 <!doctype html>
@@ -15,8 +20,8 @@ const { title = 'Simone Simonella', description } = Astro.props;
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="color-scheme" content="light dark" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" type="image/png" sizes="32x32" href={favicon32.src} />
+		<link rel="apple-touch-icon" sizes="180x180" href={favicon180.src} />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 		{description && <meta name="description" content={description} />}

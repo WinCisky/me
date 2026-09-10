@@ -5,7 +5,13 @@ export interface Repo {
 	html_url: string;
 	description: string | null;
 	pushed_at: string;
+	created_at: string;
 	fork: boolean;
+	stargazers_count: number;
+	language: string | null;
+	size: number;
+	topics?: string[];
+	homepage: string | null;
 }
 
 interface CacheEntry {

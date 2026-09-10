@@ -1,24 +1,26 @@
 ---
 import chevronLeftIcon from '../assets/chevron-left.svg';
 import chevronRightIcon from '../assets/chevron-right.svg';
+import clockIcon from '../assets/clock.svg';
 import folderGitIcon from '../assets/folder-git.svg';
 import squareUserIcon from '../assets/square-user.svg';
 import TabBar from './TabBar.astro';
 
 interface Props {
-	active?: 'projects' | 'about';
+	active?: 'recent' | 'projects' | 'about';
 	title?: string;
 	sidebar?: boolean;
 	backHref?: string;
 	path?: string[];
 }
 
-const { active = 'projects', title, sidebar = true, backHref, path } = Astro.props;
+const { active = 'recent', title, sidebar = true, backHref, path } = Astro.props;
 
 const crumbs = path ?? ['Users', 'ssimonella', title ?? ''];
 
 const links = [
-	{ label: 'Projects', href: '/', key: 'projects', icon: folderGitIcon },
+	{ label: 'Recent', href: '/', key: 'recent', icon: clockIcon },
+	{ label: 'Projects', href: '/projects', key: 'projects', icon: folderGitIcon },
 	{ label: 'About', href: '/about', key: 'about', icon: squareUserIcon },
 ] as const;
 
@@ -78,21 +80,34 @@ const ChevronRight = chevronRightIcon;
 		>
 			{sidebar ? (
 				<div class="flex items-center rounded-lg border-2 border-panel bg-sidebar text-ink-muted shadow-sm max-md:border-0 max-md:bg-transparent max-md:shadow-none">
-					{backHref ? (
+					{backHref && (
 						<a
 							href={backHref}
-							aria-label="Back"
-							class="flex items-center rounded-l-md px-1.5 py-1 no-underline hover:bg-selected max-md:text-accent"
+							aria-label="Back to Projects"
+							class="flex items-center rounded-l-md px-1.5 py-1 no-underline hover:bg-selected max-md:text-accent md:hidden"
 						>
-							<ChevronLeft class="h-4 w-4 max-md:h-5 max-md:w-5" aria-hidden="true" />
-							<span class="text-sm font-medium md:hidden">Projects</span>
+							<ChevronLeft class="h-5 w-5" aria-hidden="true" />
+							<span class="text-sm font-medium">Projects</span>
 						</a>
-					) : (
-						<span class="px-1.5 py-1" aria-hidden="true"><ChevronLeft class="h-4 w-4" /></span>
 					)}
-					<span class="px-1.5 py-1 opacity-40 max-md:hidden" aria-hidden="true">
-						<ChevronRight class="h-4 w-4" />
-					</span>
+					<button
+						type="button"
+						data-history="back"
+						aria-label="Back"
+						disabled
+						class="hidden items-center rounded-l-md px-1.5 py-1 enabled:hover:bg-selected disabled:opacity-40 md:flex"
+					>
+						<ChevronLeft class="h-4 w-4" aria-hidden="true" />
+					</button>
+					<button
+						type="button"
+						data-history="forward"
+						aria-label="Forward"
+						disabled
+						class="hidden items-center rounded-r-md px-1.5 py-1 enabled:hover:bg-selected disabled:opacity-40 md:flex"
+					>
+						<ChevronRight class="h-4 w-4" aria-hidden="true" />
+					</button>
 				</div>
 			) : (
 				<slot name="toolbar-start" />
@@ -121,3 +136,63 @@ const ChevronRight = chevronRightIcon;
 	</div>
 </div>
 {sidebar && <TabBar active={active} />}
+
+<script>
+	const STORAGE_KEY = 'finder-history';
+
+	const backBtn = document.querySelector<HTMLButtonElement>('[data-history="back"]');
+	const forwardBtn = document.querySelector<HTMLButtonElement>('[data-history="forward"]');
+
+	function readState(): { idx: number; max: number } | null {
+		try {
+			const raw = sessionStorage.getItem(STORAGE_KEY);
+			return raw ? JSON.parse(raw) : null;
+		} catch {
+			return null;
+		}
+	}
+
+	function writeState(state: { idx: number; max: number }) {
+		try {
+			sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+		} catch {
+			// sessionStorage unavailable (private mode, etc.)
+		}
+	}
+
+	function sync() {
+		if (!backBtn && !forwardBtn) return;
+
+		const stored = readState();
+		const historyIdx = (history.state as { finderIdx?: number } | null)?.finderIdx;
+
+		let idx: number;
+		let max: number;
+
+		if (typeof historyIdx === 'number') {
+			// Landed here via back/forward: reuse the position this entry was given when first visited.
+			idx = historyIdx;
+			max = Math.max(stored?.max ?? idx, idx);
+		} else {
+			// A fresh navigation: advance past the last known position and drop any forward entries.
+			idx = (stored?.idx ?? -1) + 1;
+			max = idx;
+			history.replaceState({ ...history.state, finderIdx: idx }, '');
+		}
+
+		writeState({ idx, max });
+
+		if (backBtn) backBtn.disabled = idx <= 0;
+		if (forwardBtn) forwardBtn.disabled = idx >= max;
+	}
+
+	sync();
+
+	// bfcache restores don't re-run module scripts, so re-sync explicitly.
+	window.addEventListener('pageshow', (event) => {
+		if (event.persisted) sync();
+	});
+
+	backBtn?.addEventListener('click', () => history.back());
+	forwardBtn?.addEventListener('click', () => history.forward());
+</script>
