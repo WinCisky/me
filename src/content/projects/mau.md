@@ -6,4 +6,7 @@ icon: https://raw.githubusercontent.com/WinCisky/mau/refs/heads/main/static/favi
 preview: ./mau.webp
 ---
 
-TODO
+Browse the current anime season, search the catalogue, and pick up an episode
+where you left off.
+
+The frontend is a static SvelteKit project that recovers data from Supabase.
