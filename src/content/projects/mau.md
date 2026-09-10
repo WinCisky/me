@@ -5,7 +5,7 @@ summary: Anime streaming hub built for convenience and simplicity.
 description: Mau is a fast, no-clutter anime streaming hub. Browse the current season, search the full catalogue, and pick up any episode exactly where you left off.
 tags: [anime, streaming, sveltekit, supabase, web-app]
 icon: ./mau-icon.png
-preview: ./mau.webp
+preview: ./mau-1280.webp
 ---
 
 Browse the current anime season, search the catalogue, and pick up an episode

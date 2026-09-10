@@ -5,7 +5,7 @@ summary: A simple solution for testing emails before going into production.
 description: Point a staging environment at a throwaway inbox and read exactly what it sends. Add an inbox, poll a hosted mail API, and check templates or signup flows without wiring a real mailbox into staging.
 tags: [email-testing, staging, developer-tools, sveltekit]
 icon: ./stg-email-icon.png
-preview: ./stg-email.webp
+preview: ./stg-email-1280.webp
 ---
 
 Point a staging environment at a throwaway inbox and read what it actually

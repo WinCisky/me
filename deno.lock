@@ -70,6 +70,7 @@
         "npm:@deno/astro-adapter@0.6",
         "npm:@tailwindcss/vite@^4.3.3",
         "npm:astro@^7.1.0",
+        "npm:sharp@~0.35.3",
         "npm:tailwindcss@^4.3.3"
       ]
     }

@@ -102,10 +102,10 @@ Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600');
 			{preview && (
 				<Preview
 					src={preview}
+					slug={entry.id}
 					alt={`${title ?? repo} preview`}
 					class="w-full overflow-hidden rounded-md border border-hairline"
 					imgClass="block w-full"
-					widths={[640, 960, 1280, 1600]}
 					sizes="(min-width: 768px) 700px, 92vw"
 					eager
 				/>

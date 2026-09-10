@@ -1,6 +1,5 @@
 ---
 import type { ImageMetadata } from 'astro';
-import { Image } from 'astro:assets';
 import squareIcon from '../assets/square.svg';
 import squareCodeIcon from '../assets/square-code.svg';
 
@@ -12,25 +11,17 @@ interface Props {
 const { icon, class: className = 'w-12 h-12' } = Astro.props;
 const hasIcon = Boolean(icon);
 const ContainerIcon = hasIcon ? squareIcon : squareCodeIcon;
-const isLocalIcon = typeof icon === 'object';
+// Already 64x64, served straight from /_astro — no need for astro:assets'
+// on-demand <Image>, which needs Sharp and 500s on Deno Deploy at runtime.
+const iconSrc = typeof icon === 'object' ? icon.src : icon;
 ---
 
 <div class:list={['relative shrink-0 text-ink-muted', className]}>
 	<ContainerIcon class="h-full w-full group-hover:text-accent" aria-hidden="true" />
-	{icon && isLocalIcon && (
-		<Image
-			src={icon as ImageMetadata}
-			width={24}
-			height={24}
-			alt=""
-			aria-hidden="true"
-			class="absolute top-1/2 left-1/2 w-6 h-6 -translate-x-1/2 -translate-y-1/2"
-		/>
-	)}
-	{icon && !isLocalIcon && (
+	{iconSrc && (
 		<img
 			class="absolute top-1/2 left-1/2 w-6 h-6 -translate-x-1/2 -translate-y-1/2"
-			src={icon as string}
+			src={iconSrc}
 			width="24"
 			height="24"
 			alt=""

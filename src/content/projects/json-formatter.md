@@ -5,7 +5,7 @@ summary: Format, validate and explore JSON payloads offline.
 description: Free online JSON formatter and validator. Pretty-print, collapse and explore large JSON payloads entirely client-side, with keyboard navigation and no data ever leaving your browser.
 tags: [json, formatter, validator, developer-tools, web]
 icon: ./json-formatter-icon.png
-preview: ./json-formatter.webp
+preview: ./json-formatter-1280.webp
 ---
 
 Paste raw JSON, get it pretty-printed, collapsible and validated. The parser is

@@ -1,5 +1,5 @@
 ---
-import avatar from "../assets/me.jpg";
+import avatar from "../assets/me-480.webp";
 import TabBar from "../components/TabBar.astro";
 import Layout from "../layouts/Layout.astro";
 import {
@@ -95,6 +95,8 @@ Astro.response.headers.set(
         <div class="flex flex-col items-center px-8 pt-6 pb-8 max-md:my-auto max-md:pb-24">
             <img
                 src={avatar.src}
+                width={avatar.width}
+                height={avatar.height}
                 alt={SITE_NAME}
                 class="h-40 w-auto rounded-md object-cover"
             />

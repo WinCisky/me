@@ -65,9 +65,9 @@ const secondaryPillClass =
                             {entry.data.preview ? (
                                 <Preview
                                     src={entry.data.preview}
+                                    slug={entry.id}
                                     class="flex min-h-0 max-h-full max-w-full overflow-hidden rounded-md border border-hairline shadow-sm"
                                     imgClass="block h-auto w-auto max-h-full max-w-full"
-                                    widths={[480, 640, 960, 1280]}
                                     sizes="(min-width: 768px) 560px, 92vw"
                                     eager={index === 0}
                                 />

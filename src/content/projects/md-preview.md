@@ -5,7 +5,7 @@ summary: A tiny web editor with live markdown rendering.
 description: A minimal, in-browser markdown editor with live preview and synced scrolling. No build step, no account, and the document never leaves the tab.
 tags: [markdown, editor, browser, developer-tools]
 icon: ./md-preview-icon.png
-preview: ./md-preview.webp
+preview: ./md-preview-1280.webp
 ---
 
 A minimal markdown editor that renders while you type, with no build step and no
