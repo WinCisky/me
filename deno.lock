@@ -66,6 +66,7 @@
   "workspace": {
     "packageJson": {
       "dependencies": [
+        "npm:@astrojs/rss@^4.0.19",
         "npm:@deno/astro-adapter@0.6",
         "npm:@tailwindcss/vite@^4.3.3",
         "npm:astro@^7.1.0",

@@ -2,7 +2,9 @@
 repo: string-compare-online
 title: String Compare
 summary: Side-by-side diff for two chunks of text.
-icon: https://raw.githubusercontent.com/WinCisky/string-compare-online/refs/heads/main/static/favicon.ico
+description: A free online text diff tool. Compare two chunks of text side by side with line- and word-level highlighting, handy for config files, log lines or minified snippets.
+tags: [diff, text-comparison, developer-tools, web]
+icon: ./string-compare-icon.png
 preview: ./string-compare-online.webp
 ---
 

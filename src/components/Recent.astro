@@ -41,6 +41,16 @@ const secondaryPillClass =
 ---
 
 <Window active="recent" title="Recent">
+    <h1 class="sr-only">Recent projects by Simone Simonella</h1>
+    {items.length > 1 && (
+        <ul class="sr-only">
+            {items.map(({ entry }) => (
+                <li>
+                    <a href={`/projects/${entry.id}`}>{entry.data.title ?? entry.data.repo}</a>
+                </li>
+            ))}
+        </ul>
+    )}
     {items.length > 0 ? (
         <div class="flex flex-col md:grid md:h-full md:grid-cols-[minmax(0,1fr)_14rem] md:grid-rows-[minmax(0,1fr)_auto]">
             <div class="flex flex-col md:col-start-1 md:row-start-1 md:min-h-0 md:overflow-y-auto">

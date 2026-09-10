@@ -4,22 +4,76 @@ import FileIcon from '../../components/FileIcon.astro';
 import Preview from '../../components/Preview.astro';
 import Window from '../../components/Window.astro';
 import Layout from '../../layouts/Layout.astro';
-import { GITHUB_USER } from '../../lib/github';
+import { fetchPublicRepos, GITHUB_USER } from '../../lib/github';
+import { SITE_NAME, SITE_URL } from '../../lib/site';
+
+// Old mixed-case slugs, kept working via a permanent redirect to their lowercase-kebab replacement.
+const SLUG_ALIASES: Record<string, string> = {
+	OpentrustShopifyApp: 'opentrust-shopify',
+};
 
 const { slug } = Astro.params;
+
+if (slug && slug in SLUG_ALIASES) {
+	return Astro.redirect(`/projects/${SLUG_ALIASES[slug]}`, 301);
+}
+
 const entry = slug ? await getEntry('projects', slug) : undefined;
 
 if (!entry) {
-	return new Response('Not found', { status: 404 });
+	return Astro.rewrite('/404');
 }
 
 const { Content } = await render(entry);
-const { title, repo, summary, icon, preview } = entry.data;
+const { title, repo, summary, description, tags, homepage, icon, preview } = entry.data;
+const displayTitle = title ?? repo;
+const metaDescription = description ?? summary;
+
+let dateCreated: string | undefined;
+let dateModified: string | undefined;
+try {
+	const matchedRepo = (await fetchPublicRepos(GITHUB_USER)).find(
+		(r) => r.name.toLowerCase() === repo.toLowerCase(),
+	);
+	dateCreated = matchedRepo?.created_at;
+	dateModified = matchedRepo?.pushed_at;
+} catch {
+	// GitHub API unavailable — structured data simply omits the dates.
+}
+
+const canonicalUrl = `${SITE_URL}/projects/${entry.id}`;
+const jsonLd = [
+	{
+		'@context': 'https://schema.org',
+		'@type': 'SoftwareSourceCode',
+		name: displayTitle,
+		description: metaDescription,
+		url: homepage ?? canonicalUrl,
+		codeRepository: `https://github.com/${GITHUB_USER}/${repo}`,
+		author: { '@type': 'Person', name: SITE_NAME, url: SITE_URL },
+		...(dateCreated && { dateCreated }),
+		...(dateModified && { dateModified }),
+		...(tags && tags.length > 0 && { keywords: tags.join(', ') }),
+	},
+	{
+		'@context': 'https://schema.org',
+		'@type': 'BreadcrumbList',
+		itemListElement: [
+			{ '@type': 'ListItem', position: 1, name: 'Projects', item: `${SITE_URL}/projects` },
+			{ '@type': 'ListItem', position: 2, name: displayTitle, item: canonicalUrl },
+		],
+	},
+];
 
 Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600');
 ---
 
-<Layout title={`${title ?? repo} | Simone Simonella`} description={summary}>
+<Layout
+	title={`${displayTitle} — ${SITE_NAME}`}
+	description={metaDescription}
+	ogType="article"
+	jsonLd={jsonLd}
+>
 	<Window
 		active="projects"
 		title={`${repo}.md`}

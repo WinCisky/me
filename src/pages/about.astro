@@ -2,15 +2,19 @@
 import avatar from "../assets/me.jpg";
 import TabBar from "../components/TabBar.astro";
 import Layout from "../layouts/Layout.astro";
-import { GITHUB_USER } from "../lib/github";
-
-const NAME = "Simone Simonella";
-const ROLE = "Software Developer";
-const BIRTH_DATE = "1997-10-08";
-const CAREER_START = "2021-09-01";
-const LOCATION = "Italy";
-const DESCRIPTION =
-    "I want to retire in a cabin in the woods, but until then I write code for a living. I like to work on small projects that make sense to me. ";
+import {
+    BIRTH_DATE,
+    CAREER_START,
+    CONTACT_EMAIL,
+    DESCRIPTION,
+    GITHUB_URL,
+    LINKEDIN_URL,
+    LOCATION,
+    ROLE,
+    SITE_NAME,
+    SITE_URL,
+    SOCIALS,
+} from "../lib/site";
 
 const today = new Date();
 
@@ -33,6 +37,27 @@ const rows = [
     { label: "Based in", value: LOCATION },
 ];
 
+const title = `About ${SITE_NAME} — ${ROLE} in ${LOCATION}`;
+const description = DESCRIPTION;
+
+const jsonLd = [
+    {
+        '@context': 'https://schema.org',
+        '@type': 'ProfilePage',
+        name: title,
+        url: `${SITE_URL}/about`,
+        mainEntity: {
+            '@type': 'Person',
+            name: SITE_NAME,
+            jobTitle: ROLE,
+            url: SITE_URL,
+            email: `mailto:${CONTACT_EMAIL}`,
+            address: { '@type': 'PostalAddress', addressCountry: LOCATION },
+            sameAs: SOCIALS,
+        },
+    },
+];
+
 // The table only changes at midnight, so cache the page until then.
 const nextMidnight = Date.UTC(
     today.getUTCFullYear(),
@@ -49,7 +74,7 @@ Astro.response.headers.set(
 );
 ---
 
-<Layout title="About | Simone Simonella" description={DESCRIPTION.trim()}>
+<Layout title={title} description={description} ogType="profile" jsonLd={jsonLd}>
     <div class="flex w-[340px] flex-col overflow-hidden rounded-xl border border-hairline bg-window shadow-2xl max-md:min-h-dvh max-md:w-full max-md:rounded-none max-md:border-0 max-md:shadow-none">
         <header class="hidden h-11 shrink-0 items-center gap-2 px-4 md:flex">
             <a
@@ -70,13 +95,12 @@ Astro.response.headers.set(
         <div class="flex flex-col items-center px-8 pt-6 pb-8 max-md:my-auto max-md:pb-24">
             <img
                 src={avatar.src}
-                alt=""
-                aria-hidden="true"
+                alt={SITE_NAME}
                 class="h-40 w-auto rounded-md object-cover"
             />
 
             <h1 class="mt-8 text-center text-[22px] font-bold text-ink">
-                {NAME}
+                {SITE_NAME}
             </h1>
             <p class="mt-0.5 text-center text-xs text-ink-muted">{ROLE}</p>
 
@@ -95,14 +119,31 @@ Astro.response.headers.set(
                 </tbody>
             </table>
 
-            <a
-                href={`https://github.com/${GITHUB_USER}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="mt-8 rounded-full bg-button px-4 py-1 text-[13px] font-medium text-ink no-underline hover:opacity-80"
-            >
-                More on GitHub…
-            </a>
+            <div class="mt-8 flex flex-wrap items-center justify-center gap-2">
+                <a
+                    href={GITHUB_URL}
+                    target="_blank"
+                    rel="noopener noreferrer me"
+                    class="rounded-full bg-button px-4 py-1 text-[13px] font-medium text-ink no-underline hover:opacity-80"
+                >
+                    GitHub
+                </a>
+                <a
+                    href={LINKEDIN_URL}
+                    target="_blank"
+                    rel="noopener noreferrer me"
+                    class="rounded-full bg-button px-4 py-1 text-[13px] font-medium text-ink no-underline hover:opacity-80"
+                >
+                    LinkedIn
+                </a>
+                <a
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    rel="me"
+                    class="rounded-full bg-button px-4 py-1 text-[13px] font-medium text-ink no-underline hover:opacity-80"
+                >
+                    Email
+                </a>
+            </div>
 
             <p class="mt-6 text-center text-[11px] leading-relaxed text-ink-muted">
                 {DESCRIPTION}

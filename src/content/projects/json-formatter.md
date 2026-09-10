@@ -2,7 +2,9 @@
 repo: json-formatter
 title: JSON Formatter
 summary: Format, validate and explore JSON payloads offline.
-icon: https://raw.githubusercontent.com/WinCisky/json-formatter/refs/heads/main/public/favicon.ico
+description: Free online JSON formatter and validator. Pretty-print, collapse and explore large JSON payloads entirely client-side, with keyboard navigation and no data ever leaving your browser.
+tags: [json, formatter, validator, developer-tools, web]
+icon: ./json-formatter-icon.png
 preview: ./json-formatter.webp
 ---
 

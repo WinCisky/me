@@ -1,8 +1,10 @@
 ---
 repo: OpentrustShopifyApp
 title: Opentrust Shopify
-summary: A shopify app to handle reviews.
-icon: https://raw.githubusercontent.com/WinCisky/ot/refs/heads/main/public/favicon.ico
+summary: A Shopify app to collect and display product reviews.
+description: A Shopify app that collects and displays product reviews inside a merchant's store, built on Polaris and App Bridge with a theme app extension for the storefront.
+tags: [shopify, reviews, polaris, app-bridge, e-commerce]
+icon: ./opentrust-icon.png
 ---
 
 A Shopify app that collects and displays product reviews inside a merchant's

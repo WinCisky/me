@@ -2,7 +2,9 @@
 repo: mau
 title: Mau
 summary: Anime streaming hub built for convenience and simplicity.
-icon: https://raw.githubusercontent.com/WinCisky/mau/refs/heads/main/static/favicon.png
+description: Mau is a fast, no-clutter anime streaming hub. Browse the current season, search the full catalogue, and pick up any episode exactly where you left off.
+tags: [anime, streaming, sveltekit, supabase, web-app]
+icon: ./mau-icon.png
 preview: ./mau.webp
 ---
 

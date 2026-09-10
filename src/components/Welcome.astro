@@ -28,11 +28,12 @@ const years = [...byYear.entries()].sort((a, b) => b[0] - a[0]);
 ---
 
 <Window active="projects" title="Projects">
+	<h1 class="sr-only">Projects by Simone Simonella</h1>
 	{years.map(([year, yearRepos]) => (
 		<>
-			<div class="px-4 py-2 text-[13px] font-semibold text-ink-muted not-first:border-t border-hairline">
+			<h2 class="px-4 py-2 text-[13px] font-semibold text-ink-muted not-first:border-t border-hairline">
 				{year}
-			</div>
+			</h2>
 			<div class="grid grid-cols-4 items-start gap-x-2 gap-y-4 px-4 pt-1 pb-5 md:flex md:flex-wrap md:gap-x-3 md:gap-y-5">
 				{yearRepos.map((repo) => {
 					const highlight = highlights.get(repo.name.toLowerCase());

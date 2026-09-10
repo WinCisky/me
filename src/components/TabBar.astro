@@ -16,12 +16,13 @@ const tabs = [
 ] as const;
 ---
 
-<nav class="fixed inset-x-0 bottom-0 z-10 flex justify-around border-t border-hairline bg-toolbar pb-[env(safe-area-inset-bottom)] md:hidden">
+<nav aria-label="Primary" class="fixed inset-x-0 bottom-0 z-10 flex justify-around border-t border-hairline bg-toolbar pb-[env(safe-area-inset-bottom)] md:hidden">
 	{tabs.map((tab) => {
 		const Icon = tab.icon;
 		return (
 			<a
 				href={tab.href}
+				aria-current={active === tab.key ? 'page' : undefined}
 				class:list={[
 					'flex flex-col items-center gap-0.5 px-6 pt-1.5 pb-1 text-[10px] no-underline',
 					active === tab.key ? 'text-accent' : 'text-ink-muted',

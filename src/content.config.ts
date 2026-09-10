@@ -9,6 +9,12 @@ const projects = defineCollection({
 			repo: z.string(),
 			title: z.string().optional(),
 			summary: z.string().optional(),
+			// Longer, keyword-tuned copy for <meta name="description"> and JSON-LD.
+			// Falls back to `summary` when omitted.
+			description: z.string().optional(),
+			tags: z.array(z.string()).optional(),
+			// Live demo URL, used as the JSON-LD `url`.
+			homepage: z.string().url().optional(),
 			// Emoji/text glyph or a path to an image, drawn inside the file icon.
 			icon: z.union([image(), z.string()]).optional(),
 			preview: image().optional(),

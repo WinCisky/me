@@ -12,6 +12,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/rss": "^4.0.19",
     "@deno/astro-adapter": "^0.6.0",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.1.0",

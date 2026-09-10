@@ -1,17 +1,24 @@
 ---
 import '../styles/global.css';
-import { getImage } from 'astro:assets';
-import faviconSrc from '../assets/favicon.jpg';
+import Seo from '../components/Seo.astro';
 
 interface Props {
 	title?: string;
 	description?: string;
+	ogType?: 'website' | 'profile' | 'article';
+	ogImage?: string;
+	noindex?: boolean;
+	jsonLd?: object[];
 }
 
-const { title = 'Simone Simonella', description } = Astro.props;
-
-const favicon32 = await getImage({ src: faviconSrc, width: 32, height: 32, format: 'png' });
-const favicon180 = await getImage({ src: faviconSrc, width: 180, height: 180, format: 'png' });
+const {
+	title = 'Simone Simonella',
+	description,
+	ogType,
+	ogImage,
+	noindex,
+	jsonLd,
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -20,11 +27,15 @@ const favicon180 = await getImage({ src: faviconSrc, width: 180, height: 180, fo
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="color-scheme" content="light dark" />
-		<link rel="icon" type="image/png" sizes="32x32" href={favicon32.src} />
-		<link rel="apple-touch-icon" sizes="180x180" href={favicon180.src} />
+		<meta name="theme-color" content="#e9e9ed" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#0b0b0d" media="(prefers-color-scheme: dark)" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+		<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="manifest" href="/site.webmanifest" />
+		<link rel="alternate" type="application/rss+xml" title={`${title} — RSS`} href="/rss.xml" />
 		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-		{description && <meta name="description" content={description} />}
+		<Seo title={title} description={description} ogType={ogType} ogImage={ogImage} noindex={noindex} jsonLd={jsonLd} />
 	</head>
 	<body class="min-h-dvh flex items-center justify-center bg-desktop">
 		<svg

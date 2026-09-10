@@ -1,10 +1,40 @@
 ---
+import { getCollection } from 'astro:content';
 import Welcome from '../../components/Welcome.astro';
 import Layout from '../../layouts/Layout.astro';
+import { SITE_NAME, SITE_URL } from '../../lib/site';
 
 Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600');
+
+const projects = await getCollection('projects');
+
+const title = `Projects — ${SITE_NAME}`;
+const description = `Personal projects by ${SITE_NAME}: developer tools, small web apps and utilities, including ${projects
+	.slice(0, 3)
+	.map((p) => p.data.title ?? p.data.repo)
+	.join(', ')} and more.`;
+
+const jsonLd = [
+	{
+		'@context': 'https://schema.org',
+		'@type': 'CollectionPage',
+		name: title,
+		url: `${SITE_URL}/projects`,
+		isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: SITE_URL },
+	},
+	{
+		'@context': 'https://schema.org',
+		'@type': 'ItemList',
+		itemListElement: projects.map((entry, index) => ({
+			'@type': 'ListItem',
+			position: index + 1,
+			name: entry.data.title ?? entry.data.repo,
+			url: `${SITE_URL}/projects/${entry.id}`,
+		})),
+	},
+];
 ---
 
-<Layout title="Projects | Simone Simonella" description="Personal projects by Simone Simonella.">
+<Layout title={title} description={description} jsonLd={jsonLd}>
 	<Welcome />
 </Layout>

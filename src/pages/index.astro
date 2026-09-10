@@ -1,10 +1,33 @@
 ---
 import Recent from '../components/Recent.astro';
 import Layout from '../layouts/Layout.astro';
+import { CONTACT_EMAIL, LOCATION, ROLE, SITE_NAME, SITE_URL, SOCIALS } from '../lib/site';
 
 Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600');
+
+const title = `${SITE_NAME} — ${ROLE}`;
+const description = `${SITE_NAME}, ${ROLE.toLowerCase()} in ${LOCATION}. Small, useful web projects: JSON Formatter, Markdown Preview, String Compare, stg-email and more.`;
+
+const jsonLd = [
+	{
+		'@context': 'https://schema.org',
+		'@type': 'WebSite',
+		name: SITE_NAME,
+		url: SITE_URL,
+	},
+	{
+		'@context': 'https://schema.org',
+		'@type': 'Person',
+		name: SITE_NAME,
+		jobTitle: ROLE,
+		url: SITE_URL,
+		email: `mailto:${CONTACT_EMAIL}`,
+		address: { '@type': 'PostalAddress', addressCountry: LOCATION },
+		sameAs: SOCIALS,
+	},
+];
 ---
 
-<Layout title="Simone Simonella | Recent" description="Projects Simone Simonella recently worked on.">
+<Layout title={title} description={description} jsonLd={jsonLd}>
 	<Recent />
 </Layout>
