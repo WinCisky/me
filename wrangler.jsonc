@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "me",
+  "main": "@astrojs/cloudflare/entrypoints/server",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+
+  // GITHUB_TOKEN is a secret: `npx wrangler secret put GITHUB_TOKEN`; locally it's read from .env.
+
+  // Serve the site on its domain once the ssimo.dev zone is on Cloudflare (CLOUDFLARE_MIGRATION.md, Phase 5).
+  // "routes": [{ "pattern": "ssimo.dev", "custom_domain": true }]
+}

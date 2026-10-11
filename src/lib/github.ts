@@ -1,3 +1,5 @@
+import { GITHUB_TOKEN } from 'astro:env/server';
+
 export const GITHUB_USER = 'WinCisky';
 
 export interface Repo {
@@ -22,28 +24,17 @@ interface CacheEntry {
 
 const TTL_MS = 60 * 60 * 1000;
 
-// Deno Deploy has a read-only filesystem: the cache lives in memory, per isolate.
+// Cloudflare Workers have no writable filesystem: the cache lives in memory, per isolate.
 let cache: CacheEntry | null = null;
 let inFlight: Promise<Repo[]> | null = null;
 
-function readToken(): string | undefined {
-	const denoEnv = (globalThis as { Deno?: { env?: { get(key: string): string | undefined } } }).Deno?.env;
-	try {
-		if (denoEnv) return denoEnv.get('GITHUB_TOKEN');
-	} catch {
-		// --allow-env permission not granted
-	}
-	return typeof process !== 'undefined' ? process.env?.GITHUB_TOKEN : undefined;
-}
-
 async function revalidate(user: string): Promise<Repo[]> {
 	const url = `https://api.github.com/users/${encodeURIComponent(user)}/repos?per_page=100&sort=pushed&direction=desc&type=owner`;
-	const token = readToken();
 	const headers: Record<string, string> = {
 		Accept: 'application/vnd.github+json',
 		'User-Agent': 'minor-metal',
 	};
-	if (token) headers.Authorization = `Bearer ${token}`;
+	if (GITHUB_TOKEN) headers.Authorization = `Bearer ${GITHUB_TOKEN}`;
 	// 304 responses do not count against the rate limit.
 	if (cache?.etag) headers['If-None-Match'] = cache.etag;
 

@@ -12,7 +12,7 @@ const { icon, class: className = 'w-12 h-12' } = Astro.props;
 const hasIcon = Boolean(icon);
 const ContainerIcon = hasIcon ? squareIcon : squareCodeIcon;
 // Already 64x64, served straight from /_astro — no need for astro:assets'
-// on-demand <Image>, which needs Sharp and 500s on Deno Deploy at runtime.
+// on-demand <Image>, which needs Sharp and can't run on Cloudflare Workers.
 const iconSrc = typeof icon === 'object' ? icon.src : icon;
 ---
 

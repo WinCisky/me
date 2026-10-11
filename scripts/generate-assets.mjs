@@ -101,7 +101,7 @@ await writeFile(join(publicDir, 'robots.txt'), robots);
 console.log('wrote public/robots.txt');
 
 // --- Project preview variants ------------------------------------------------
-// Deno Deploy has no Sharp at runtime, so previews can't go through Astro's
+// Cloudflare Workers have no Sharp at runtime, so previews can't go through Astro's
 // on-demand /_image endpoint. Pre-shrink each master preview into a few
 // widths here; src/lib/preview-variants.ts (also generated below) lets
 // Preview.astro build a real srcset from plain <img> tags.
